@@ -16,12 +16,16 @@ int testMuitoTrab(){
 }
 
 int testSegmentation(){
-    raise(SIGSEGV);
+    //raise(SIGSEGV);
+    int *p = NULL;
+    *p = 9;
+
     return 0;
 }
 
 int testDivision0(){
-    raise(SIGFPE);
+    //raise(SIGFPE);
+    int a = 6/0;
     return 0;
 }
 
@@ -34,7 +38,7 @@ int testFalhaPassa(){
 }
 
 int testPrints(){
-    for(int i = 0; i < 1321325; i++){
+    for(int i = 0; i < 9999; i++){
         printf("Print-");
     }
     return 0;
@@ -45,11 +49,13 @@ int testRapido(){
 }
 
 int testLento(){
-    sleep(600);
+    sleep(120);
     return 0;
 }
 test_list = { TEST(testLoopInfinito), TEST(testMuitoTrab), TEST(testDivision0), \
               TEST(testFalhaPassa), TEST(testLento), TEST(testPrints), \
               TEST(testSegmentation), TEST(testRapido)};
+
+//test_list = {TEST(testFalhaPassa)};
 
 #include "mintest/runner.h"

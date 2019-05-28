@@ -1,56 +1,71 @@
-static int timeout;
-
-void alarm_handler(int sign){
-    timeout = 1;
-}
-
-
 int main() {
     int size = sizeof(all_tests)/sizeof(test_data);
 
     printf("Running %d tests:\n", size);
     printf("=====================\n\n");
     
+    //Contador e lista de forks e pids
     int pass_count = 0;
     pid_t piaidi[size];
+    pid_t forqui[size];
 
+    //Pipe e buffer
+    char buffer;
+    int fds[size];
+
+
+    //Loop para criar filhos e wait
     for (int i = 0; i < size; i++){
-        pid_t filho = fork();
+        
+        //Arquivo temporario
+        fds[i] = open("/tmp", __O_TMPFILE | O_RDWR, 0600);
+        forqui[i] = fork();
 
-        if (filho == 0){
-            signal(SIGALRM, alarm_handler);
-            alarm(5);
-
+        if (forqui[i] == 0){
+            //Setar o alarm
+            alarm(2);
+            //Setar o dup 
+            dup2(fds[i], 1);
+            
             int test = all_tests[i].function();
-
-            return test;
-        }
-        else{
-            piaidi[i] = filho;
+            
+            // Teste passou
+            if (test >= 0){
+                printf(KNORMAL "%s: " KGRN "[PASS]\n" KNORMAL, all_tests[i].name);
+                return test;
+            }
+            
+            return -1;
         }
     }
 
     for (int j = 0; j < size; j++){
         int test;
-        pid_t p = waitpid(piaidi[j],&test, WUNTRACED);
-        if (p == -1){
-            if (timeout){
-                // alarm
+        piaidi[j] = waitpid(forqui[j],&test, WUNTRACED);
+
+        //Recebendo saida 
+        if (WIFEXITED(test)){
+            printf(KNORMAL "%s exit status = " KBLU "%d\n" KNORMAL, all_tests[j].name, WEXITSTATUS(test));
+            if (WEXITSTATUS(test) == 0){
+                pass_count++;
             }
         }
-        if (WEXITSTATUS(test) == 0){
-            printf("%s: [PASS]\n", all_tests[j].name);
-            pass_count++;
-        }
-        else if(WIFSIGNALED(test)){
-            char buffer[50];
-            psignal(WTERMSIG(test),buffer);
-            printf("\nError -> %s\n", buffer);
+        
+        // Falha e print do erro
+        if(WIFSIGNALED(test)){
+            printf(KNORMAL"\n%s : " KRED "[FAIL] " KNORMAL "com sinal: %s\n", all_tests[j].name, strsignal(WTERMSIG(test)));
         }
 
-    }
+        //Setar o cursor
+        lseek(fds[j], 0, SEEK_SET);
 
-    printf("\n\n=====================\n");
-    printf("%d/%d tests passed\n", pass_count, size);
+        //Ler o dup 
+        while(read(fds[j],&buffer,1)>0){
+            printf("%c",buffer);
+        }
+    } 
+
+    printf("\n\n==============================================\n");
+    printf(KGRN "%d" KNORMAL "/%d tests " KGRN "passed\n" KNORMAL, pass_count, size);
     return 0;
 }
