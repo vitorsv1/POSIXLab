@@ -8,11 +8,12 @@ int testLoopInfinito() {
 }
 
 int testMuitoTrab(){
-    for(int i = 0; i <= 99999999999; i++){
-        for(int j = 0; j <= 99999999999; j++){
-            return 0;
+    for(int i = 0; i <= 99999; i++){
+        for(int j = 0; j <= 9999; j++){
+            
         }    
     }
+    return 0;
 }
 
 int testSegmentation(){
@@ -38,9 +39,13 @@ int testFalhaPassa(){
 }
 
 int testPrints(){
-    for(int i = 0; i < 9999; i++){
-        printf("Print-");
-    }
+    test_printf("Print\n");
+    test_printf("Print\n");
+    test_printf("Print\n");
+    test_printf("Print\n");
+    test_printf("Print\n");
+    test_printf("Print\n");
+    test_assert(3 == 3, "This succeeds");
     return 0;
 }
 
@@ -49,13 +54,13 @@ int testRapido(){
 }
 
 int testLento(){
-    sleep(120);
+    sleep(5);
     return 0;
 }
 test_list = { TEST(testLoopInfinito), TEST(testMuitoTrab), TEST(testDivision0), \
               TEST(testFalhaPassa), TEST(testLento), TEST(testPrints), \
               TEST(testSegmentation), TEST(testRapido)};
 
-//test_list = {TEST(testFalhaPassa)};
+
 
 #include "mintest/runner.h"

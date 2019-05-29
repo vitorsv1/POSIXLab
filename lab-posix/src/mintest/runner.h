@@ -2,7 +2,7 @@ int main() {
     int size = sizeof(all_tests)/sizeof(test_data);
 
     printf("Running %d tests:\n", size);
-    printf("=====================\n\n");
+    printf("==============================================\n\n");
     
     //Contador e lista de forks e pids
     int pass_count = 0;
@@ -23,18 +23,25 @@ int main() {
 
         if (forqui[i] == 0){
             //Setar o alarm
-            alarm(2);
+            alarm(7);
             //Setar o dup 
             dup2(fds[i], 1);
             
+            time_t begin,end;
+            begin = time(NULL);
             int test = all_tests[i].function();
+            end = time(NULL);
+            float time_taken = difftime(end,begin);
             
             // Teste passou
             if (test >= 0){
                 printf(KNORMAL "%s: " KGRN "[PASS]\n" KNORMAL, all_tests[i].name);
+                printf("%s demorou " KBLU "%f" KNORMAL " sec\n", all_tests[i].name, time_taken);
                 return test;
             }
             
+            printf("%s demorou " KBLU "%f" KNORMAL" sec\n"  , all_tests[i].name, time_taken);
+
             return -1;
         }
     }
@@ -45,7 +52,7 @@ int main() {
 
         //Recebendo saida 
         if (WIFEXITED(test)){
-            printf(KNORMAL "%s exit status = " KBLU "%d\n" KNORMAL, all_tests[j].name, WEXITSTATUS(test));
+            printf(KNORMAL "\n%s exit status = " KBLU "%d\n" KNORMAL, all_tests[j].name, WEXITSTATUS(test));
             if (WEXITSTATUS(test) == 0){
                 pass_count++;
             }

@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <sys/stat.h> 
 #include <fcntl.h>
+#include <time.h>
 #include <string.h> 
 
 #define KGRN  "\x1B[32m"
