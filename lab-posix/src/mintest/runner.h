@@ -1,3 +1,15 @@
+void CHandler (int sig){
+    char  c;
+
+    signal(sig, SIG_IGN);
+    printf("\nDid you hit Ctrl-C!\n"
+    "Do you really want to quit? [y/n]: ");
+    c = getchar();
+    if (c == 'y' || c == 'Y')
+        kill(0,SIGKILL);
+}
+
+
 int main() {
     int size = sizeof(all_tests)/sizeof(test_data);
 
@@ -27,6 +39,9 @@ int main() {
             //Setar o dup 
             dup2(fds[i], 1);
             
+            //ignorar o ctrl-c no filho
+            signal(SIGINT, SIG_IGN);
+
             time_t begin,end;
             begin = time(NULL);
             int test = all_tests[i].function();
@@ -45,6 +60,12 @@ int main() {
             return -1;
         }
     }
+
+    struct sigaction s;
+    s.sa_handler = CHandler;
+    sigemptyset(&s.sa_mask);
+    sigaction(SIGINT,&s,NULL);
+    s.sa_flags = 0;
 
     for (int j = 0; j < size; j++){
         int test;

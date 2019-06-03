@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <string.h> 
+#include <ctype.h>
 
 #define KGRN  "\x1B[32m"
 #define KRED  "\x1B[31m"
