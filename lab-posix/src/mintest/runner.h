@@ -51,11 +51,11 @@ int main() {
             // Teste passou
             if (test >= 0){
                 printf(KNORMAL "%s: " KGRN "[PASS]\n" KNORMAL, all_tests[i].name);
-                printf("%s demorou " KBLU "%f" KNORMAL " sec\n", all_tests[i].name, time_taken);
+                printf("%s demorou " KBLU "%d sec\n" KNORMAL, all_tests[i].name, (int) time_taken);
                 return test;
             }
             
-            printf("%s demorou " KBLU "%f" KNORMAL" sec\n"  , all_tests[i].name, time_taken);
+            printf("%s demorou " KBLU "%d sec\n" KNORMAL , all_tests[i].name, (int) time_taken);
 
             return -1;
         }
