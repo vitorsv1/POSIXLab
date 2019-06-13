@@ -1,3 +1,7 @@
+
+clock_t begin;   
+
+
 void CHandler (int sig){
     char  c;
 
@@ -42,20 +46,20 @@ int main() {
             //ignorar o ctrl-c no filho
             signal(SIGINT, SIG_IGN);
 
-            time_t begin,end;
-            begin = time(NULL);
+            clock_t end;
+            begin = clock();
             int test = all_tests[i].function();
-            end = time(NULL);
-            float time_taken = difftime(end,begin);
+            end = clock();
+            double time_taken = (double) (end - begin) / CLOCKS_PER_SEC;
             
             // Teste passou
             if (test >= 0){
                 printf(KNORMAL "%s: " KGRN "[PASS]\n" KNORMAL, all_tests[i].name);
-                printf("%s demorou " KBLU "%d sec\n" KNORMAL, all_tests[i].name, (int) time_taken);
+                printf("%s demorou " KBLU "%lf sec\n" KNORMAL, all_tests[i].name, time_taken);
                 return test;
             }
-            
-            printf("%s demorou " KBLU "%d sec\n" KNORMAL , all_tests[i].name, (int) time_taken);
+
+            printf("%s demorou " KBLU "%lf sec\n" KNORMAL, all_tests[i].name, time_taken);
 
             return -1;
         }
@@ -81,7 +85,10 @@ int main() {
         
         // Falha e print do erro
         if(WIFSIGNALED(test)){
+            clock_t end = clock();
+            double time_taken = (double) (end - begin) / CLOCKS_PER_SEC;
             printf(KNORMAL"\n%s : " KRED "[FAIL] " KNORMAL "com sinal: %s\n", all_tests[j].name, strsignal(WTERMSIG(test)));
+            printf("%s demorou " KBLU "%lf sec\n" KNORMAL , all_tests[j].name, time_taken);
         }
 
         //Setar o cursor
