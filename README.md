@@ -12,9 +12,15 @@ Calculando o tempo por time (sem ms) dentro dos filhos.
 
 Analisando signal caso o CRTL+C seja apertado o pai da um kill 0 para matar o grupo.
 
+### Rodar:
+
+Para rodar gere o executavel com :
+ - gcc SeuArquivo.c -o SeuExecutavel
+ - ./SeuExecutavel 
+### Saida: 
+
 O terminal com os teste criados sai desta maneira:
 
-### Saida: 
 
 Running 8 tests:
 
